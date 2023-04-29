@@ -1,61 +1,76 @@
 :root {
-  --block-width: 50px;
-  --block-height: 50px;
-  --block-border-radius: 12px;
+    --block-width: 50px;
+    --block-height: 50px;
+    --block-border-radius: 12px;
+    --dev-controls-border-radius: 1em;
 }
 
 .container {
-  height: 100%;
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-  display: flex;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    display: flex;
 }
 
 .blockContainer {
-  outline: 1px solid red;
-  margin: auto;
-  width: 75%;
-  height: 50%;
-  display: flex;
-  gap: 1em;
+    outline: 1px solid red;
+    margin: auto;
+    width: 75%;
+    height: 50%;
+    display: flex;
+    gap: 1em;
 }
 
 .dataBlock {
-  width: var(--block-width);
-  height: var(--block-height);
-  outline: 3px dotted red;
-  border-radius: var(--block-border-radius);
+    width: var(--block-width);
+    height: var(--block-height);
+    outline: 3px dotted red;
+    border-radius: var(--block-border-radius);
 }
 
 .visibleBlock {
-  position: absolute;
-  width: var(--block-width);
-  height: var(--block-height);
-  border-radius: var(--block-border-radius);
-  background: green;
+    position: absolute;
+    width: var(--block-width);
+    height: var(--block-height);
+    border-radius: var(--block-border-radius);
+    background: green;
 }
 
 /* DEV CONTROLS */
 
 .devControls {
-  background: rgba(0,0,0,0.2);
-  padding: 1em;
-  border-radius: 1em;
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  position: absolute;
-
-  width: max-content;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.5em;
+    border-radius: var(--dev-controls-border-radius);
+    display: flex;
+    flex-flow: column wrap;
+    position: absolute;
+    align-items: flex-start;
+    /* TODO: make width responsive */
+    width: 54%;
+    max-height: 50%;
 }
 
 .devControls:hover {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .devControls p {
-  color: grey;
-  padding: 0px;
-  margin: 0;
+    color: grey;
+    padding: 0px;
+    margin: 0;
+}
+
+.devControls .flexGroup {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.5em;
+    border-radius: var(--dev-controls-border-radius);
+    margin: 5px;
+}
+
+.devControls .radioButtons {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }

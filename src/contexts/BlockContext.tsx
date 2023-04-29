@@ -1,71 +1,60 @@
-import { CSSProperties, Reducer, createContext, useContext, useReducer } from "react";
+import { Reducer, createContext, useContext, useReducer } from 'react';
+import { ParentFlexPayload } from 'constants/flexProperties';
 
 export enum Actions {
-    FLEX_DIRECTION = 'flexDirection',
-    JUSTIFY_CONTENT = 'justifyContent',
-    ALIGN_ITEMS = 'alignItems'
+    STYLE,
+    GAME_STATE,
+    OBJECT_COUNT,
 }
 
 type ContextState = {
     state: {
-        flexDirection: CSSProperties["flexDirection"],
-        justifyContent: CSSProperties["justifyContent"],
-        alignItems: CSSProperties["alignItems"],
-    },
+        parent: ParentFlexPayload;
+    };
     dispatch: React.Dispatch<{
         action: Actions;
-        value: CSSProperties[Actions.FLEX_DIRECTION]
-    }>
-}
+        value: Partial<ParentFlexPayload>;
+    }>;
+};
 
 const reducer: Reducer<
-    ContextState["state"],
-    Parameters<ContextState["dispatch"]>[0]
+    ContextState['state'],
+    Parameters<ContextState['dispatch']>[0]
 > = (state, payload) => {
     switch (payload.action) {
-        case Actions.FLEX_DIRECTION: {
-            return {
-                ...state,
-                flexDirection: payload.value
-            }
-        }
-        case Actions.ALIGN_ITEMS: {
-            return {
-                ...state,
-                alignItems: payload.value
-            }
-        }
-        case Actions.JUSTIFY_CONTENT: {
-            return {
-                ...state,
-                justifyContent: payload.value
-            }
+        case Actions.STYLE: {
+            return { ...state, ...payload.value };
         }
         default: {
-            return state
+            return state;
         }
     }
-}
+};
 
-const BlockContext = createContext<null | ContextState>(null)
+const BlockContext = createContext<null | ContextState>(null);
 
-export const BlockContextProvider = (
-    {children}: {children: React.ReactNode}
-) => {
+export const BlockContextProvider = ({
+    children,
+}: {
+    children: React.ReactNode;
+}) => {
     const [state, dispatch] = useReducer(reducer, {
-        flexDirection: "row",
-        justifyContent: "start",
-        alignItems: "start"
-    })
+        parent: {
+            flexDirection: 'row',
+            flexWrap: 'nowrap',
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+    });
     return (
-        <BlockContext.Provider value={{state, dispatch}}>
+        <BlockContext.Provider value={{ state, dispatch }}>
             {children}
         </BlockContext.Provider>
-    )
-}
+    );
+};
 
 export const useBlockContext = () => {
     const value = useContext(BlockContext);
-    if (!value) throw 'Must use context within BlockContext Provider'
-    return value
-}
+    if (!value) throw 'Must use context within BlockContext Provider';
+    return value;
+};

@@ -1,17 +1,17 @@
-import { Container } from './components/Layout/Container'
-import { DevControls } from './components/DevControls'
-import { Block } from 'components/Block'
-import { useBlockContext } from 'contexts/BlockContext'
-import classes from './css/App.module.css'
+import { Container } from './components/Layout/Container';
+import { DevControls } from './components/DevControls';
+import { Block } from 'components/Block';
+import { useBlockContext } from 'contexts/BlockContext';
+import classes from './css/App.module.css';
 
-const BLOCK_COUNT = 3
+const BLOCK_COUNT = 3;
 
 function App() {
-    const { state } = useBlockContext()
+    const { state } = useBlockContext();
     return (
         <Container>
             <DevControls />
-            <div className={classes.blockContainer} style={{ ...state }}>
+            <div className={classes.blockContainer} style={{ ...state.parent }}>
                 {Array(BLOCK_COUNT)
                     .fill(<></>)
                     .map((_, i) => (
@@ -19,7 +19,7 @@ function App() {
                     ))}
             </div>
         </Container>
-    )
+    );
 }
 
-export default App
+export default App;

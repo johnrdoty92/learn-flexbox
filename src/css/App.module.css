@@ -40,16 +40,14 @@
 /* DEV CONTROLS */
 
 .devControls {
+  position: absolute;
+  height: min-content;
   background: rgba(0, 0, 0, 0.2);
   padding: 0.5em;
   border-radius: var(--dev-controls-border-radius);
-  display: flex;
-  flex-flow: column wrap;
-  position: absolute;
-  align-items: flex-start;
-  /* TODO: make width responsive */
-  width: 54%;
-  max-height: 50%;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  gap: 0.25em;
 }
 
 .devControls:hover {
@@ -64,9 +62,12 @@
 
 .devControls .flexGroup {
   background: rgba(255, 255, 255, 0.03);
-  padding: 0.5em;
   border-radius: var(--dev-controls-border-radius);
+  padding: 4px;
   margin: 5px;
+  flex: 1 1 160px;
+  min-width: max-content;
+  height: fit-content;
 }
 
 .devControls .radioButtons {

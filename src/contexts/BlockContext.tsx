@@ -23,7 +23,12 @@ const reducer: Reducer<
 > = (state, payload) => {
     switch (payload.action) {
         case Actions.STYLE: {
-            return { ...state, ...payload.value };
+            return {
+                parent: {
+                    ...state.parent,
+                    ...payload.value,
+                },
+            };
         }
         default: {
             return state;

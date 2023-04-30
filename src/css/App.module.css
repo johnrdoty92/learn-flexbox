@@ -15,7 +15,8 @@
 
 .blockContainer {
   outline: 1px solid red;
-  margin: auto;
+  position: relative;
+  margin: 5% auto;
   width: 75%;
   height: 50%;
   display: flex;
@@ -34,19 +35,19 @@
   min-width: var(--block-width);
   min-height: var(--block-height);
   border-radius: var(--block-border-radius);
-  background: green;
 }
 
 /* DEV CONTROLS */
 
 .devControls {
+  z-index: 10;
   position: absolute;
   height: min-content;
   background: rgba(0, 0, 0, 0.2);
   padding: 0.5em;
   border-radius: var(--dev-controls-border-radius);
   display: grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 0.25em;
 }
 

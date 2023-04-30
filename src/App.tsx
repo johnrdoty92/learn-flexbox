@@ -12,20 +12,35 @@ function App() {
   const { state } = useBlockContext();
   const [springs, api] = useSprings(BLOCK_COUNT, () => {
     return {
-      x: window.innerWidth / 2,
-      y: window.innerHeight / 2,
+      left: window.innerWidth / 2,
+      top: window.innerHeight / 2,
+      width: '0%',
+      height: '0%',
     };
   });
 
   useEffect(() => {
     if (!dataBlockContainerRef.current) return;
+    let stretchedProps = { width: '0%', height: '0%' };
+    if (
+      state.parent.alignItems === 'stretch' ||
+      state.parent.alignItems === 'normal'
+    ) {
+      if (state.parent.flexDirection.includes('column')) {
+        stretchedProps = { width: '100%', height: '0%' };
+      } else if (state.parent.flexDirection.includes('row')) {
+        stretchedProps = { width: '0%', height: '100%' };
+      }
+    }
     dataBlockContainerRef.current.childNodes.forEach((child, i) => {
       if (!(child instanceof HTMLElement)) return;
+      if (child.className === classes.visibleBlock) return;
       api.start((index) => {
         if (index !== i) return false;
         return {
-          x: child.offsetLeft,
-          y: child.offsetTop,
+          left: child.offsetLeft,
+          top: child.offsetTop,
+          ...stretchedProps,
         };
       });
     });
@@ -34,15 +49,6 @@ function App() {
   return (
     <Container>
       <DevControls />
-      {springs.map((props, i) => {
-        return (
-          <animated.div
-            className={classes.visibleBlock}
-            key={`visibleBlock-${i}`}
-            style={{ ...props }}
-          />
-        );
-      })}
       <div
         ref={dataBlockContainerRef}
         className={classes.blockContainer}
@@ -53,6 +59,18 @@ function App() {
           .map((_, i) => (
             <div key={`dataBlock-${i}`} className={classes.dataBlock} />
           ))}
+        {springs.map((props, i) => {
+          return (
+            <animated.div
+              className={classes.visibleBlock}
+              key={`visibleBlock-${i}`}
+              style={{
+                ...props,
+                backgroundColor: `rgb(20, ${255 / (i + 1)}, 120)`,
+              }}
+            />
+          );
+        })}
       </div>
     </Container>
   );

@@ -21,29 +21,36 @@ function App() {
 
   useEffect(() => {
     if (!dataBlockContainerRef.current) return;
-    let stretchedProps = { width: '0%', height: '0%' };
-    if (
-      state.parent.alignItems === 'stretch' ||
-      state.parent.alignItems === 'normal'
-    ) {
-      if (state.parent.flexDirection.includes('column')) {
-        stretchedProps = { width: '100%', height: '0%' };
-      } else if (state.parent.flexDirection.includes('row')) {
-        stretchedProps = { width: '0%', height: '100%' };
+    const updatePositions = () => {
+      if (!dataBlockContainerRef.current) return;
+      let stretchedProps = { width: '0%', height: '0%' };
+      if (
+        state.parent.alignItems === 'stretch' ||
+        state.parent.alignItems === 'normal'
+      ) {
+        if (state.parent.flexDirection.includes('column')) {
+          stretchedProps = { width: '100%', height: '0%' };
+        } else if (state.parent.flexDirection.includes('row')) {
+          stretchedProps = { width: '0%', height: '100%' };
+        }
       }
-    }
-    dataBlockContainerRef.current.childNodes.forEach((child, i) => {
-      if (!(child instanceof HTMLElement)) return;
-      if (child.className === classes.visibleBlock) return;
-      api.start((index) => {
-        if (index !== i) return false;
-        return {
-          left: child.offsetLeft,
-          top: child.offsetTop,
-          ...stretchedProps,
-        };
+      dataBlockContainerRef.current.childNodes.forEach((child, i) => {
+        if (!(child instanceof HTMLElement)) return;
+        if (child.className === classes.visibleBlock) return;
+        api.start((index) => {
+          if (index !== i) return false;
+          return {
+            left: child.offsetLeft,
+            top: child.offsetTop,
+            ...stretchedProps,
+          };
+        });
       });
-    });
+    };
+    updatePositions();
+    const resizeObserver = new ResizeObserver(() => updatePositions());
+    resizeObserver.observe(dataBlockContainerRef.current);
+    return () => resizeObserver.disconnect();
   }, [state]);
 
   return (
@@ -66,7 +73,9 @@ function App() {
               key={`visibleBlock-${i}`}
               style={{
                 ...props,
-                backgroundColor: `rgb(20, ${255 / (i + 1)}, 120)`,
+                backgroundColor: `rgb(20, ${
+                  255 - i * (255 / BLOCK_COUNT)
+                }, 120)`,
               }}
             />
           );

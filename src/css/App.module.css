@@ -76,3 +76,20 @@
   flex-direction: column;
   align-items: flex-start;
 }
+
+.devControls .countControls {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 1em 0em;
+  gap: 0.5em;
+}
+
+.devControls .countButtons {
+  display: flex;
+  justify-content: space-around;
+}
+
+.countButtons button {
+  padding: 0.5em 1em;
+}

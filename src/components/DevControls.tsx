@@ -15,6 +15,12 @@ export const DevControls = () => {
     }
   };
 
+  const handleObjCountChange =
+    (i: number) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      e.preventDefault();
+      dispatch({ action: Actions.OBJECT_COUNT, value: i });
+    };
+
   return (
     <Draggable nodeRef={nodeRef}>
       <form
@@ -41,6 +47,15 @@ export const DevControls = () => {
                 </label>
               ))}
             </div>
+            {property === 'flexWrap' && (
+              <div className={classes.countControls}>
+                <p>Block Count</p>
+                <div className={classes.countButtons}>
+                  <button onClick={handleObjCountChange(1)}>+1</button>
+                  <button onClick={handleObjCountChange(-1)}>-1</button>
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </form>

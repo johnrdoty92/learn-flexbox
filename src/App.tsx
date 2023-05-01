@@ -5,17 +5,18 @@ import classes from './css/App.module.css';
 import { useEffect, useRef } from 'react';
 import { animated, useSprings } from '@react-spring/web';
 
-const BLOCK_COUNT = 3;
-
 function App() {
   const dataBlockContainerRef = useRef<HTMLDivElement>(null);
-  const { state } = useBlockContext();
-  const [springs, api] = useSprings(BLOCK_COUNT, () => {
+  const {
+    state: { parent, objectCount },
+  } = useBlockContext();
+  const [springs, api] = useSprings(objectCount, () => {
     return {
       left: window.innerWidth / 2,
       top: window.innerHeight / 2,
       width: '0%',
       height: '0%',
+      opacity: 0,
     };
   });
 
@@ -24,13 +25,10 @@ function App() {
     const updatePositions = () => {
       if (!dataBlockContainerRef.current) return;
       let stretchedProps = { width: '0%', height: '0%' };
-      if (
-        state.parent.alignItems === 'stretch' ||
-        state.parent.alignItems === 'normal'
-      ) {
-        if (state.parent.flexDirection.includes('column')) {
+      if (parent.alignItems === 'stretch' || parent.alignItems === 'normal') {
+        if (parent.flexDirection.includes('column')) {
           stretchedProps = { width: '100%', height: '0%' };
-        } else if (state.parent.flexDirection.includes('row')) {
+        } else if (parent.flexDirection.includes('row')) {
           stretchedProps = { width: '0%', height: '100%' };
         }
       }
@@ -42,6 +40,7 @@ function App() {
           return {
             left: child.offsetLeft,
             top: child.offsetTop,
+            opacity: 1,
             ...stretchedProps,
           };
         });
@@ -51,7 +50,7 @@ function App() {
     const resizeObserver = new ResizeObserver(() => updatePositions());
     resizeObserver.observe(dataBlockContainerRef.current);
     return () => resizeObserver.disconnect();
-  }, [state]);
+  }, [parent, objectCount]);
 
   return (
     <Container>
@@ -59,9 +58,9 @@ function App() {
       <div
         ref={dataBlockContainerRef}
         className={classes.blockContainer}
-        style={{ ...state.parent }}
+        style={{ ...parent }}
       >
-        {Array(BLOCK_COUNT)
+        {Array(objectCount)
           .fill(<></>)
           .map((_, i) => (
             <div key={`dataBlock-${i}`} className={classes.dataBlock} />
@@ -74,7 +73,7 @@ function App() {
               style={{
                 ...props,
                 backgroundColor: `rgb(20, ${
-                  255 - i * (255 / BLOCK_COUNT)
+                  255 - i * (255 / objectCount)
                 }, 120)`,
               }}
             />

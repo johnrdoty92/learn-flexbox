@@ -4,6 +4,7 @@ import { useBlockContext } from 'contexts/BlockContext';
 import classes from './css/App.module.css';
 import { useEffect, useRef } from 'react';
 import { animated, useSprings } from '@react-spring/web';
+import { GameControls } from 'components/GameControls';
 
 function App() {
   const dataBlockContainerRef = useRef<HTMLDivElement>(null);
@@ -80,6 +81,7 @@ function App() {
           );
         })}
       </div>
+      <GameControls />
     </Container>
   );
 }

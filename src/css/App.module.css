@@ -37,6 +37,28 @@
   border-radius: var(--block-border-radius);
 }
 
+/* GAME CONTROLS */
+
+.gameControlsContainer {
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.navTabGroup {
+  display: flex;
+  gap: 1em;
+}
+
+.navTabOptionsGroup {
+  
+}
+
+.tab1Selected {
+  outline: 1px solid red;
+}
+
 /* DEV CONTROLS */
 
 .devControls {

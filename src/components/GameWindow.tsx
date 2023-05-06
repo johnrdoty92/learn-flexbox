@@ -1,10 +1,13 @@
 import { animated, useSprings } from '@react-spring/web';
 import { useBlockContext } from 'contexts/BlockContext';
-import { useRef, useEffect } from 'react';
+import { RefObject, useEffect } from 'react';
 import classes from '../css/App.module.css';
 
-export const GameWindow = () => {
-  const dataBlockContainerRef = useRef<HTMLDivElement>(null);
+export const GameWindow = ({
+  gameWindowRef,
+}: {
+  gameWindowRef: RefObject<HTMLDivElement>;
+}) => {
   const {
     state: { parent, objectCount },
   } = useBlockContext();
@@ -19,9 +22,9 @@ export const GameWindow = () => {
   });
 
   useEffect(() => {
-    if (!dataBlockContainerRef.current) return;
+    if (!gameWindowRef.current) return;
     const updatePositions = () => {
-      if (!dataBlockContainerRef.current) return;
+      if (!gameWindowRef.current) return;
       let stretchedProps = { width: '0%', height: '0%' };
       if (parent.alignItems === 'stretch' || parent.alignItems === 'normal') {
         if (parent.flexDirection.includes('column')) {
@@ -30,7 +33,7 @@ export const GameWindow = () => {
           stretchedProps = { width: '0%', height: '100%' };
         }
       }
-      dataBlockContainerRef.current.childNodes.forEach((child, i) => {
+      gameWindowRef.current.childNodes.forEach((child, i) => {
         if (!(child instanceof HTMLElement)) return;
         if (child.className === classes.visibleBlock) return;
         api.start((index) => {
@@ -46,13 +49,13 @@ export const GameWindow = () => {
     };
     updatePositions();
     const resizeObserver = new ResizeObserver(() => updatePositions());
-    resizeObserver.observe(dataBlockContainerRef.current);
+    resizeObserver.observe(gameWindowRef.current);
     return () => resizeObserver.disconnect();
   }, [parent, objectCount]);
 
   return (
     <div
-      ref={dataBlockContainerRef}
+      ref={gameWindowRef}
       className={classes.gameWindow}
       style={{ ...parent }}
     >

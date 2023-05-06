@@ -26,8 +26,8 @@ button {
   outline: 1px solid red;
 }
 
-.blockContainer {
-  outline: 1px solid red;
+.gameWindow {
+  outline: 1px solid green;
   position: relative;
   margin: 5% auto;
   width: 75%;

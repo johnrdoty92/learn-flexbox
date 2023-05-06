@@ -5,12 +5,25 @@
   --dev-controls-border-radius: 1em;
 }
 
+/* CSS Resets */
+
+button {
+  border: none;
+  padding: 0;
+}
+
+/* Elements */
+
 .container {
   height: 100%;
   width: 100%;
   position: relative;
   overflow: hidden;
   display: flex;
+}
+
+.selected {
+  outline: 1px solid red;
 }
 
 .blockContainer {
@@ -44,19 +57,29 @@
   bottom: 5%;
   left: 50%;
   transform: translateX(-50%);
+  width: 50%;
+  /*TODO: stack the game screen onto the game controls*/
 }
 
-.navTabGroup {
+.flexPropertyBtnContainer {
   display: flex;
-  gap: 1em;
+  justify-content: center;
 }
 
-.navTabOptionsGroup {
-  
+.flexPropertyValueBtnContainer {
+  outline: 1px solid blue;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
-.tab1Selected {
-  outline: 1px solid red;
+.flexPropertyValueText {
+  margin: 0;
+  padding: 4px;
+  word-break: keep-all;
 }
 
 /* DEV CONTROLS */

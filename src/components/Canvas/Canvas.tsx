@@ -1,10 +1,14 @@
 import { RefObject, useEffect, useRef, useState } from 'react';
+import { Dot, Renderer } from './Renderer';
 
 export const Canvas = ({
   gameWindowRef,
 }: {
   gameWindowRef: RefObject<HTMLDivElement>;
 }) => {
+  // TODO: use a ref to store all the game objects
+  // then call state updater on game objects to
+  // give access to state, node refs, etc
   const nodeRef = useRef<HTMLCanvasElement>(null);
   const [dimensions, setDimensions] = useState({
     width: gameWindowRef.current?.clientWidth,
@@ -13,40 +17,13 @@ export const Canvas = ({
 
   useEffect(() => {
     const ctx = nodeRef.current?.getContext('2d');
-    if (!ctx) return;
-    let requestId: number;
-    const speed = 5;
-    let x = 0;
-    let dx = 1;
-    let y = 0;
-    let dy = 1;
-    const render = () => {
-      let isCollision = false;
-      gameWindowRef.current?.childNodes.forEach((child) => {
-        if (!(child instanceof HTMLElement)) return;
-        if (
-          x > child.offsetLeft &&
-          x < child.offsetLeft + child.offsetWidth &&
-          y > child.offsetTop &&
-          y < child.offsetHeight + child.offsetTop
-        )
-          isCollision = true;
-      });
-
-      ctx.fillStyle = isCollision ? '#FF0000' : '#FFFFFF';
-      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      ctx.beginPath();
-      ctx.arc(x, y, 5, 0, 360);
-      ctx.fill();
-      if (x > ctx.canvas.offsetWidth) dx = -1;
-      if (x < 0) dx = 1;
-      x += speed * dx;
-      if (y > ctx.canvas.offsetHeight) dy = -1;
-      if (y < 0) dy = 1;
-      y += speed * dy;
-      requestId = requestAnimationFrame(render);
-    };
-    render();
+    if (!ctx || !gameWindowRef.current) return;
+    const dots = [];
+    for (let i = 0; i < 10; i++) {
+      dots.push(new Dot(ctx, gameWindowRef.current.childNodes));
+    }
+    const renderer = new Renderer(ctx, dots);
+    const requestId = renderer.render();
 
     const resizeObserver = new ResizeObserver((entries) => {
       const { width, height } = entries[0].contentRect;
@@ -54,7 +31,7 @@ export const Canvas = ({
     });
     if (gameWindowRef.current) resizeObserver.observe(gameWindowRef.current);
     return () => {
-      if (requestId !== undefined) cancelAnimationFrame(requestId);
+      cancelAnimationFrame(requestId);
       resizeObserver.disconnect();
     };
   }, []);

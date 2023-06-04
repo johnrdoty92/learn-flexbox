@@ -1,5 +1,5 @@
 import { RefObject, useEffect, useRef, useState } from 'react';
-import { Dot, Renderer } from './Renderer';
+import { Dot, Obstacle, Renderer } from './Renderer';
 
 export const Canvas = ({
   gameWindowRef,
@@ -19,6 +19,7 @@ export const Canvas = ({
     const ctx = nodeRef.current?.getContext('2d');
     if (!ctx || !gameWindowRef.current) return;
     const dots = [];
+    dots.push(new Obstacle(ctx, gameWindowRef.current.childNodes));
     for (let i = 0; i < 10; i++) {
       dots.push(new Dot(ctx, gameWindowRef.current.childNodes));
     }

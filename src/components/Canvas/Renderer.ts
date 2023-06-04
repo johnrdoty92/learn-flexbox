@@ -10,6 +10,7 @@ export class Renderer {
     this.ctx = ctx;
     this.gameObjects = gameObjects;
   }
+  // TODO: pass in frame as number
   render(): number {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.gameObjects.forEach((obj) => obj.draw());
@@ -42,7 +43,46 @@ export class Obstacle extends GameObject {
     this.ctx = ctx;
   }
   draw() {
-    // needs to reference state to know where to draw
+    // Draw the whole screen as damage zone
+    this.ctx.rect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    this.ctx.fillStyle = 'black';
+    this.ctx.fill();
+    // Draw safe zones
+    //TODO: get game state's flex properties to get array of mapping fns
+    const safeZones: [number, number, number, number][] = [
+      [
+        this.ctx.canvas.width / 2 - 50,
+        this.ctx.canvas.height / 2 - 50,
+        this.ctx.canvas.width / 4,
+        this.ctx.canvas.height / 4,
+      ],
+      [
+        this.ctx.canvas.width / 2 - 200,
+        this.ctx.canvas.height / 2 - 100,
+        this.ctx.canvas.width / 4,
+        this.ctx.canvas.height / 4,
+      ],
+      [
+        this.ctx.canvas.width / 2 + 200,
+        this.ctx.canvas.height / 2 - 150,
+        this.ctx.canvas.width / 4,
+        this.ctx.canvas.height / 4,
+      ],
+    ];
+    this.ctx.fillStyle = 'white';
+    this.ctx.filter = 'blur(10px)';
+    safeZones.forEach(([x, y, width, height]) => {
+      this.ctx.save();
+      this.ctx.fillRect(x, y, width, height);
+      this.ctx.globalCompositeOperation = 'lighten';
+      const gradient = this.ctx.createLinearGradient(x, y, x, y + height);
+      gradient.addColorStop(0, 'grey');
+      gradient.addColorStop(1, 'transparent');
+      this.ctx.fillStyle = gradient;
+      this.ctx.translate(0, height);
+      this.ctx.fillRect(x, y, width, height);
+      this.ctx.restore();
+    });
   }
 }
 

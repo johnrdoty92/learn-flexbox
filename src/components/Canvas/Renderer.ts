@@ -31,6 +31,9 @@ abstract class GameObject {
   // abstract updateState(): void;
 }
 
+const svgFilterDefs = new URL('../../assets/blobFilter.svg', import.meta.url)
+  .href;
+
 export class Obstacle extends GameObject {
   collisionNodes: NodeListOf<ChildNode>;
   ctx: CanvasRenderingContext2D;
@@ -43,56 +46,49 @@ export class Obstacle extends GameObject {
     this.ctx = ctx;
   }
   draw() {
-    // Draw the whole screen as damage zone
-    this.ctx.fillStyle = 'black';
-    this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    // Save state of context
+    this.ctx.save();
+
     // Draw safe zones
     //TODO: get game state's flex properties to get array of mapping fns
     const safeZones: [number, number, number, number][] = [
       [
         this.ctx.canvas.width / 2 - 50,
         this.ctx.canvas.height / 2 - 50,
-        this.ctx.canvas.width / 4,
-        this.ctx.canvas.height / 4,
+        this.ctx.canvas.width / 5,
+        this.ctx.canvas.height / 6,
       ],
       [
         this.ctx.canvas.width / 2 - 200,
         this.ctx.canvas.height / 2 - 100,
-        this.ctx.canvas.width / 4,
-        this.ctx.canvas.height / 4,
+        this.ctx.canvas.width / 5,
+        this.ctx.canvas.height / 6,
       ],
       [
         this.ctx.canvas.width / 2 + 200,
         this.ctx.canvas.height / 2 - 150,
-        this.ctx.canvas.width / 4,
-        this.ctx.canvas.height / 4,
+        this.ctx.canvas.width / 5,
+        this.ctx.canvas.height / 6,
       ],
     ];
-    this.ctx.fillStyle = 'white';
-    const svgFilterDefs = new URL(
-      '../../assets/blobFilter.svg',
-      import.meta.url
-    ).href;
+
     this.ctx.filter = `url(${svgFilterDefs}#blob)`;
-    this.ctx.save();
     const path = new Path2D();
-    safeZones.sort((a, b) => a[1] - b[1]);
+
     safeZones.forEach(([x, y, width, height]) => {
       path.rect(x, y, width, height);
-      this.ctx.save();
-      this.ctx.translate(0, height / 1.75);
-      const gradient = this.ctx.createLinearGradient(x, y, x + width, y);
-      gradient.addColorStop(0, 'white');
-      gradient.addColorStop(0.1, 'grey');
-      gradient.addColorStop(0.5, 'lightgrey');
-      gradient.addColorStop(0.9, 'grey');
-      gradient.addColorStop(1, 'white');
-      this.ctx.fillStyle = gradient;
-      this.ctx.fillRect(x, y, width, height);
-      this.ctx.restore();
     });
-    this.ctx.restore();
+    // Draw platform top
+    this.ctx.fillStyle = 'hsl(215 60% 85%)';
     this.ctx.fill(path);
+    // Draw platform bottom
+    this.ctx.globalCompositeOperation = 'destination-over';
+    this.ctx.fillStyle = 'hsl(215 60% 37%)';
+    this.ctx.translate(0, 20);
+    this.ctx.fill(path);
+
+    // Restore state
+    this.ctx.restore();
   }
 }
 
@@ -129,9 +125,16 @@ export class Dot extends GameObject {
         isCollision = true;
     });
     this.ctx.fillStyle = isCollision ? '#FF0000' : '#FFFFFF';
-    this.ctx.beginPath();
-    this.ctx.arc(this.x, this.y, 5, 0, 360);
-    this.ctx.fill();
+    const dotPath = new Path2D();
+    dotPath.arc(this.x, this.y, 5, 0, 360);
+    // Draw shadow
+    this.ctx.save();
+    this.ctx.translate(0, 15);
+    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    this.ctx.fill(dotPath);
+    this.ctx.restore();
+    // Draw ball
+    this.ctx.fill(dotPath);
     if (this.x > this.ctx.canvas.offsetWidth) this.dx = -1;
     if (this.x < 0) this.dx = 1;
     this.x += this.speed * this.dx;

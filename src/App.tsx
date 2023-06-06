@@ -9,7 +9,7 @@ function App() {
   const gameWindowRef = useRef<HTMLDivElement>(null);
   return (
     <Container>
-      <DevControls />
+      {/* <DevControls /> */}
       <Canvas gameWindowRef={gameWindowRef} />
       <GameWindow gameWindowRef={gameWindowRef} />
       <GameControls />

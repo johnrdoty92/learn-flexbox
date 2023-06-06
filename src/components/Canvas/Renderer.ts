@@ -44,9 +44,8 @@ export class Obstacle extends GameObject {
   }
   draw() {
     // Draw the whole screen as damage zone
-    this.ctx.rect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.fillStyle = 'black';
-    this.ctx.fill();
+    this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     // Draw safe zones
     //TODO: get game state's flex properties to get array of mapping fns
     const safeZones: [number, number, number, number][] = [
@@ -70,19 +69,30 @@ export class Obstacle extends GameObject {
       ],
     ];
     this.ctx.fillStyle = 'white';
-    this.ctx.filter = 'blur(10px)';
+    const svgFilterDefs = new URL(
+      '../../assets/blobFilter.svg',
+      import.meta.url
+    ).href;
+    this.ctx.filter = `url(${svgFilterDefs}#blob)`;
+    this.ctx.save();
+    const path = new Path2D();
+    safeZones.sort((a, b) => a[1] - b[1]);
     safeZones.forEach(([x, y, width, height]) => {
+      path.rect(x, y, width, height);
       this.ctx.save();
-      this.ctx.fillRect(x, y, width, height);
-      this.ctx.globalCompositeOperation = 'lighten';
-      const gradient = this.ctx.createLinearGradient(x, y, x, y + height);
-      gradient.addColorStop(0, 'grey');
-      gradient.addColorStop(1, 'transparent');
+      this.ctx.translate(0, height / 1.75);
+      const gradient = this.ctx.createLinearGradient(x, y, x + width, y);
+      gradient.addColorStop(0, 'white');
+      gradient.addColorStop(0.1, 'grey');
+      gradient.addColorStop(0.5, 'lightgrey');
+      gradient.addColorStop(0.9, 'grey');
+      gradient.addColorStop(1, 'white');
       this.ctx.fillStyle = gradient;
-      this.ctx.translate(0, height);
       this.ctx.fillRect(x, y, width, height);
       this.ctx.restore();
     });
+    this.ctx.restore();
+    this.ctx.fill(path);
   }
 }
 

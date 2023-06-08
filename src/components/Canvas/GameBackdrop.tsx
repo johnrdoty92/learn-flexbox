@@ -1,4 +1,5 @@
 import { RefObject, useEffect, useState } from 'react';
+import { animated } from '@react-spring/web';
 import svgBlobFilter from 'assets/blobFilter.svg';
 
 const svgFilterDefs = new URL(svgBlobFilter, import.meta.url).href;
@@ -27,17 +28,18 @@ export const GameBackdrop = ({
   // TODO: create useEffect that changes spring state on game state changes
   return (
     <svg
-      style={{ outline: '10px solid red', position: 'absolute' }}
+      style={{ position: 'absolute' }}
       {...dimensions}
+      filter={`url(${svgFilterDefs}#blob)`}
     >
-      {/* TODO: use game flex state to map out shapes */}
+      {/* TODO: use game flex state to map out shapes with animated.rect */}
       <rect
+        x={100}
+        y={101}
+        fill="white"
+        width={150}
+        height={80}
         filter={`url(${svgFilterDefs}#blob)`}
-        x={300}
-        y={30}
-        fill="pink"
-        width={400}
-        height={400}
       />
     </svg>
   );

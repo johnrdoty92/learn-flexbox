@@ -18,12 +18,8 @@ export const Canvas = ({
   useEffect(() => {
     const ctx = nodeRef.current?.getContext('2d');
     if (!ctx || !gameWindowRef.current) return;
-    const dots = [];
-    dots.push(new Obstacle(ctx, gameWindowRef.current.childNodes));
-    for (let i = 0; i < 10; i++) {
-      dots.push(new Dot(ctx, gameWindowRef.current.childNodes));
-    }
-    const renderer = new Renderer(ctx, dots);
+    const platforms = [new Obstacle(ctx, gameWindowRef.current.childNodes)];
+    const renderer = new Renderer(ctx, platforms);
     const requestId = renderer.render();
 
     const resizeObserver = new ResizeObserver((entries) => {

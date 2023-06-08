@@ -3,6 +3,8 @@
 // easing
 // determining when to start/stop animations
 
+import { AnimationTimer } from 'util/AnimationTimer';
+
 export class Renderer {
   ctx: CanvasRenderingContext2D;
   gameObjects: GameObject[];
@@ -20,6 +22,7 @@ export class Renderer {
   // updateState(state: GameState) {
   //   this.gameObjects.forEach((obj) => obj.update(state));
   // }
+  // TODO: pass in frame number
   addGameObject(gameObject: GameObject) {
     this.gameObjects.push(gameObject);
   }
@@ -37,6 +40,7 @@ const svgFilterDefs = new URL('../../assets/blobFilter.svg', import.meta.url)
 export class Obstacle extends GameObject {
   collisionNodes: NodeListOf<ChildNode>;
   ctx: CanvasRenderingContext2D;
+  timer: AnimationTimer;
   constructor(
     ctx: CanvasRenderingContext2D,
     collisionNodes: NodeListOf<ChildNode>
@@ -44,6 +48,7 @@ export class Obstacle extends GameObject {
     super();
     this.collisionNodes = collisionNodes;
     this.ctx = ctx;
+    this.timer = new AnimationTimer(2000);
   }
   draw() {
     // Save state of context
@@ -79,6 +84,7 @@ export class Obstacle extends GameObject {
       path.rect(x, y, width, height);
     });
     // Draw platform top
+    this.ctx.scale(1, this.timer.getAnimationValue(1));
     this.ctx.fillStyle = 'hsl(215 60% 85%)';
     this.ctx.fill(path);
     // Draw platform bottom
@@ -86,7 +92,7 @@ export class Obstacle extends GameObject {
     this.ctx.fillStyle = 'hsl(215 60% 37%)';
     this.ctx.translate(0, 20);
     this.ctx.fill(path);
-
+    // Change opacity
     // Restore state
     this.ctx.restore();
   }

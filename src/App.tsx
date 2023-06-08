@@ -4,13 +4,15 @@ import { GameControls } from 'components/GameControls';
 import { GameWindow } from 'components/GameWindow';
 import { useRef } from 'react';
 import { Canvas } from 'components/Canvas/Canvas';
+import { GameBackdrop } from 'components/Canvas/GameBackdrop';
 
 function App() {
   const gameWindowRef = useRef<HTMLDivElement>(null);
   return (
     <Container>
       {/* <DevControls /> */}
-      <Canvas gameWindowRef={gameWindowRef} />
+      <GameBackdrop gameWindowRef={gameWindowRef} />
+      {/* <Canvas gameWindowRef={gameWindowRef} /> */}
       <GameWindow gameWindowRef={gameWindowRef} />
       <GameControls />
     </Container>
